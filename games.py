@@ -105,17 +105,22 @@ class Game:
     def __repr__(self):
         return "<{}>".format(self.__class__.__name__)
 
-    def play_game(self, *players):
+    def play_game(self, *players, verbose=False):
         """Play an n-person, move-alternating game."""
         state = self.initial
         while True:
             for player in players:
-                move = player(self, state)
+                move = player(self, state, verbose=verbose)
                 state = self.result(state, move)
 
                 # if no moves left, compute utility
                 if self.terminal_test(state):
+
                     score = self.utility(state, self.to_move(self.initial))
+
+                    if verbose:
+                        self.display(state)
+                        print("Black wins" if score > 0 else "White wins")
 
                     return 1 if score > 0 else 0
 
@@ -190,7 +195,7 @@ class Othello(Game):
     def display(self, state):
         """Print the board and show the utility for each player."""
         board = state.board
-        print("=================================")
+        print("\n=================================")
         print("B: %d, W: %d" % self.count(board))
         print(f"\n{state.to_move}'s turn")
         moves = self._get_legal_moves(board, state.to_move)

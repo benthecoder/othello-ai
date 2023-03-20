@@ -11,9 +11,9 @@ def alpha_beta_player(game, state, d=4, eval_fn=None, verbose=False):
     return alpha_beta_cutoff_search(state, game, d=d, eval_fn=eval_fn, verbose=verbose)
 
 
-def play_game(B_player, W_player):
+def play_game(B_player, W_player, verbose=False):
     game = Othello()
-    result = game.play_game(B_player, W_player)
+    result = game.play_game(B_player, W_player, verbose=verbose)
     return result
 
 
@@ -80,11 +80,9 @@ if __name__ == "__main__":
         with open("eval_results.txt", "w") as f:
             pprint(eval_results, stream=f)
 
-# play a game between weighted_board_position and mobility
-# B_player = functools.partial(
-#    alpha_beta_player, eval_fn=weighted_board_position, verbose=True
-# )
-# W_player = functools.partial(alpha_beta_player, eval_fn=mobility, verbose=True)
+    ## play a game between weighted_board_position and mobility
+    # B_player = functools.partial(alpha_beta_player, verbose=True)
+    # W_player = functools.partial(alpha_beta_player, verbose=True)
 
-# res = play_game(B_player, W_player)
-# print(res)
+    # res = play_game(B_player, W_player, verbose=True)
+    # print(res)

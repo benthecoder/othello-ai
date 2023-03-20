@@ -1,7 +1,7 @@
 from games import Othello, alpha_beta_cutoff_search
 
 
-def query_player(game, state):
+def query_player(game, state, verbose=False):
     """Make a move by querying standard input."""
 
     game.display(state)
@@ -30,8 +30,8 @@ def query_player(game, state):
     return move
 
 
-def alpha_beta_player(game, state):
-    return alpha_beta_cutoff_search(state, game, verbose=True)
+def alpha_beta_player(game, state, verbose=False):
+    return alpha_beta_cutoff_search(state, game, verbose=verbose)
 
 
 if __name__ == "__main__":
@@ -41,4 +41,4 @@ if __name__ == "__main__":
     B_player = query_player
     W_player = alpha_beta_player
 
-    win = game.play_game(B_player, W_player)
+    win = game.play_game(B_player, W_player, verbose=True)

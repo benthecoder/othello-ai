@@ -53,12 +53,12 @@ Below are the results
 
 ## Eval functions comparison
 
-Implement at least two evaluation functions with varying quality. Compare the effect of improving the evaluation function.
-
 The two evaluation functions I implemented are:
 
 - static board of weights (current player's advantage in terms of their position on the board)
 - mobility (current player's advantage in terms of their ability to make moves and restrict the opponent's moves)
+
+The default utility function is coin parity (difference in number of coins/disc between the two players)
 
 Here are the results
 
