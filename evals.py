@@ -10,14 +10,14 @@ def weighted_board_position(game, state):
     player = state.to_move
 
     weights = [
-        [4, -3, 2, 2, 2, 2, -3, 4],
-        [-3, -4, -1, -1, -1, -1, -4, -3],
-        [2, -1, 1, 0, 0, 1, -1, 2],
-        [2, -1, 0, 1, 1, 0, -1, 2],
-        [2, -1, 0, 1, 1, 0, -1, 2],
-        [2, -1, 1, 0, 0, 1, -1, 2],
-        [-3, -4, -1, -1, -1, -1, -4, -3],
-        [4, -3, 2, 2, 2, 2, -3, 4],
+        [120, -20, 20, 5, 5, 20, -20, 120],
+        [-20, -40, -5, -5, -5, -5, -40, -20],
+        [20, -5, 15, 3, 3, 15, -5, 20],
+        [5, -5, 3, 3, 3, 3, -5, 5],
+        [5, -5, 3, 3, 3, 3, -5, 5],
+        [20, -5, 15, 3, 3, 15, -5, 20],
+        [-20, -40, -5, -5, -5, -5, -40, -20],
+        [120, -20, 20, 5, 5, 20, -20, 120],
     ]
 
     score = 0
@@ -32,13 +32,36 @@ def weighted_board_position(game, state):
 
 
 def mobility(game, state):
+    """(moves of max player - moves of min player)"""
+
+    player = state.to_move
+    opponent = "B" if player == "W" else "W"
+
+    player_m = len(game._get_legal_moves(state.board, player))
+    opp_m = len(game._get_legal_moves(state.board, opponent))
+
+    return (player_m - opp_m) / (player_m + opp_m + 1)
+
+
+def mobility_corners(game, state):
     """(moves of max player - moves of min player after max player's move)"""
 
-    player_moves = len(state.moves)
-    opponent_moves = 0
+    def count_corners(board, player):
 
-    for move in state.moves:
-        next_state = game.result(state, move)
-        opponent_moves += len(next_state.moves)
+        corners = [(0, 0), (0, 7), (7, 0), (7, 7)]
+        count = 0
+        for corner in corners:
+            if board.get(corner) == player:
+                count += 1
+        return count
 
-    return player_moves - opponent_moves
+    player = state.to_move
+    opponent = "B" if player == "W" else "W"
+
+    player_m = len(game._get_legal_moves(state.board, player))
+    opp_m = len(game._get_legal_moves(state.board, opponent))
+
+    player_c = count_corners(state.board, state.to_move)
+    opp_c = count_corners(state.board, opponent)
+
+    return 10 * (player_c - opp_c) + ((player_m - opp_m) / (player_m + opp_m + 1))

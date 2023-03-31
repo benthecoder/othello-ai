@@ -6,6 +6,7 @@ Sources:
 
 import numpy as np
 from collections import namedtuple
+import random
 
 GameState = namedtuple("GameState", "to_move, utility, board, moves")
 
@@ -47,21 +48,40 @@ def alpha_beta_cutoff_search(
             beta = min(beta, v)
         return v
 
+    # random move
+    if eval_fn == "random":
+        return random.choice(game.actions(state))
+
     # Body of alpha_beta_cutoff_search starts here:
     # The default test cuts off at depth d or at a terminal state
     cutoff_test = cutoff_test or (
         lambda state, depth: depth > d or game.terminal_test(state)
     )
     eval_fn = eval_fn or (lambda _, state: game.utility(state, player))
+
     best_score = -np.inf
     beta = np.inf
     best_action = None
 
+    actions = []
+
     for a in game.actions(state):
         v = min_value(game.result(state, a), best_score, beta, 1)
+        actions.append((v, a))
         if v > best_score:
             best_score = v
             best_action = a
+
+    # introduce randomness
+    # if there are multiple actions with the same best value, choose randomly
+    best_actions = []
+    for action in actions:
+        if action[0] == best_score:
+            best_actions.append(action[1])
+
+    if len(best_actions) > 1:
+        best_action = random.choice(best_actions)
+
     return best_action
 
 
@@ -121,6 +141,9 @@ class Game:
                     if verbose:
                         self.display(state)
                         print("Black wins" if score > 0 else "White wins")
+
+                    if score == 0:
+                        return -1
 
                     return 1 if score > 0 else 0
 
